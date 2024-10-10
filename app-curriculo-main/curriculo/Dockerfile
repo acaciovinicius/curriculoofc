@@ -1,19 +1,12 @@
-# Build stage
-FROM ubuntu:latest AS build
+# Use uma imagem base apropriada
+FROM maven:3.8.6-openjdk-11 AS build
 
-RUN apt-get update && apt-get install -y openjdk-17-jdk maven
-
+# Defina o diretório de trabalho
 WORKDIR /app
 
-COPY . .
+# Copie o conteúdo da pasta correta
+COPY ./app-curriculo-main/curriculo .
 
+# Execute o Maven
 RUN mvn clean package -DskipTests
 
-# Package stage
-FROM openjdk:17-jdk-slim
-
-EXPOSE 8080
-
-COPY --from=build /app/target/curriculo-0.0.1-SNAPSHOT.jar app.jar
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
